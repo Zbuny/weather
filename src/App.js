@@ -77,6 +77,17 @@ const Weather = () => {
           </div>
         </>
       )}
+         {weather && weather.weathercode === 0 && <SunEffect />}
+    </div>
+  );
+};
+
+const SunEffect = () => {
+  return (
+    <div className="sun">
+      {[...Array(12)].map((_, i) => (
+        <div key={i} className="sun-ray" style={{ transform: `rotate(${i * 30}deg) translateX(50px)` }}></div>
+      ))}
     </div>
   );
 };
