@@ -76,3 +76,28 @@
   width: 26px;
   margin-top: 10px ;
 }
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.app {
+  background: linear-gradient(45deg, rgb(15, 95, 176), rgb(96, 43, 175), rgb(79, 79, 194));
+  background-size: 300% 300%;
+  animation: gradientAnimation 10s infinite ease-in-out;
+}
+@keyframes sunRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.sun {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, yellow 50%, orange 90%);
+  border-radius: 50%;
+  box-shadow: 0 0 50px yellow;
+  animation: sunRotate 10s linear infinite;
+}
