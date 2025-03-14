@@ -1,28 +1,44 @@
-
 import React, { useState, useEffect } from "react";
-import search_icon from "./Assets/search.png";
-import clear_icon from "./Assets/clear.png";
-import cloud_icon from "./Assets/cloud.png";
-import drizzle_icon from "./Assets/drizzle.png";
-import rain_icon from "./Assets/rain.png";
-import snow_icon from "./Assets/snow.png";
-import wind_icon from "./Assets/wind.png";
-import humidity_icon from "./Assets/humidity.png";
+import { HashRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
+import searchIcon from "./Assets/search.png";
+import clearIcon from "./Assets/clear.png";
+import cloudIcon from "./Assets/cloud.png";
+import drizzleIcon from "./Assets/drizzle.png";
+import rainIcon from "./Assets/rain.png";
+import snowIcon from "./Assets/snow.png";
+import windIcon from "./Assets/wind.png";
+import humidityIcon from "./Assets/humidity.png";
 
-const App = () => {
+const Star = ({ selected, onClick }) => (
+  <span onClick={onClick} style={{ cursor: "pointer", color: selected ? "gold" : "gray", fontSize: "24px" }}>
+    ★
+  </span>
+);
+
+const StarRating = ({ totalStars = 5 }) => {
+  const [starsSelected, setStarsSelected] = useState(0);
   return (
-    <div className='app'>
-      <Weather/>
+    <div className="rating">
+      <p>Rate the weather forecast:</p>
+      {[...Array(totalStars)].map((_, i) => (
+        <Star key={i} selected={i < starsSelected} onClick={() => setStarsSelected(i + 1)} />
+      ))}
+      <p>{starsSelected} out of {totalStars} stars</p>
+      <Link to="/">Back</Link>
     </div>
-  )
-}
+  );
+};
+
 const Weather = () => {
   const [city, setCity] = useState("Almaty");
   const [weather, setWeather] = useState(null);
-  const [icon, setIcon] = useState(clear_icon);
+  const [icon, setIcon] = useState(clearIcon);
+  const navigate = useNavigate(); 
+
   useEffect(() => {
     getWeather(city);
   }, []);
+
   const getWeather = (cityName) => {
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${cityName}&count=1`)
       .then((res) => res.json())
@@ -39,21 +55,30 @@ const Weather = () => {
           .then((data) => {
             setWeather({ ...data.current_weather, name });
             let code = data.current_weather.weathercode;
-            if (code === 0) setIcon(clear_icon);
-            else if (code >= 1 && code <= 3) setIcon(cloud_icon);
-            else if (code >= 45 && code <= 48) setIcon(drizzle_icon);
-            else if (code >= 51 && code <= 67) setIcon(rain_icon);
-            else if (code >= 71 && code <= 77) setIcon(snow_icon);
+            if (code === 0) setIcon(clearIcon);
+            else if (code >= 1 && code <= 3) setIcon(cloudIcon);
+            else if (code >= 45 && code <= 48) setIcon(drizzleIcon);
+            else if (code >= 51 && code <= 67) setIcon(rainIcon);
+            else if (code >= 71 && code <= 77) setIcon(snowIcon);
           });
       })
       .catch(() => alert("Error loading data!"));
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    getWeather(city);
+  };
+
   return (
     <div className="weather">
-      <div className="search-bar">
+      <form onSubmit={handleSubmit} className="search-bar">
         <input type="text" placeholder="Enter city..." value={city} onChange={(e) => setCity(e.target.value)} />
-        <img src={search_icon} alt="search" onClick={() => getWeather(city)} />
-      </div>
+        <button type="submit">
+          <img src={searchIcon} alt="search" />
+        </button>
+      </form>
+
       {weather && (
         <>
           <img src={icon} alt="weather-icon" className="weather-icon" />
@@ -61,25 +86,41 @@ const Weather = () => {
           <p className="location">{weather.name}</p>
           <div className="weather-data">
             <div className="col">
-              <img src={humidity_icon} alt="humidity" />
+              <img src={humidityIcon} alt="humidity" />
               <div>
                 <p>{weather.relative_humidity ? `${weather.relative_humidity}%` : "—"}</p>
                 <span>Humidity</span>
               </div>
             </div>
             <div className="col">
-              <img src={wind_icon} alt="wind" />
+              <img src={windIcon} alt="wind" />
               <div>
                 <p>{weather.windspeed} km/h</p>
-                <span>Wind Speed</span>
+                <span>Wind speed</span>
               </div>
             </div>
           </div>
+
+          <button className="rate-button" onClick={() => navigate("/rate")}>
+            Rate forecast
+          </button>
         </>
       )}
     </div>
   );
 };
 
+const App = () => {
+  return (
+    <Router>
+      <div className="app">
+        <Routes>
+          <Route path="/" element={<Weather />} />
+          <Route path="/rate" element={<StarRating />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
 
-export default App
+export default App;
