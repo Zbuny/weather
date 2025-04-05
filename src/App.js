@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HashRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
+import CitiesList from "./CitiesList";
 import searchIcon from "./Assets/search.png";
 import clearIcon from "./Assets/clear.png";
 import cloudIcon from "./Assets/cloud.png";
@@ -114,13 +115,19 @@ const App = () => {
   return (
     <Router>
       <div className="app">
+      <nav className="nav-links">
+      <Link to="/" className="nav-btn">Home</Link>
+      <Link to="/cities" className="nav-btn">Cities List</Link>
+       </nav>
         <Routes>
           <Route path="/" element={<Weather />} />
           <Route path="/rate" element={<StarRating />} />
+          <Route path="/cities" element={<CitiesList />} />
         </Routes>
       </div>
     </Router>
   );
 };
+
 
 export default App;

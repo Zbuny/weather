@@ -149,3 +149,25 @@
   background: #c65330;
   transform: scale(0.95);
 }
+.nav-links {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.nav-btn {
+  background-color: #ff7f50;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: #ff5722;
+}
