@@ -1,0 +1,117 @@
+.auth-container {
+  color: white;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(45deg, rgb(42, 125, 208), rgb(126, 93, 174), rgb(15, 15, 191));
+  background-size: 300% 300%;
+  animation: gradientAnimation 10s infinite ease-in-out;
+  border-radius: 20px;
+  
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.auth-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 40px;
+  max-width: 400px;
+  background: transparent;
+  color: white;
+}
+
+.auth-form h2 {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 30px;
+}
+
+.auth-form input {
+  height: 50px;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  padding-left: 25px;
+  background: #ebfffc;
+  font-size: 18px;
+  color: blue;
+  
+}
+
+.auth-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  border: none;
+  border-radius: 25px;
+  background-color: #ff7f50;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin: 10px 0;
+}
+
+.auth-btn .material-icons {
+  font-size: 30px;
+}
+
+.auth-btn:hover {
+  background-color: #ff5722;
+  transform: scale(1.1);
+}
+
+.auth-btn:active {
+  background-color: #e64a19;
+  transform: scale(0.95);
+}
+
+.auth-btn.login-btn {
+  width: 100%; 
+  border-radius: 25px;
+}
+
+.auth-btn.google {
+  background-color: #ffffff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.auth-btn.google:hover {
+  background-color: #6f829f;
+}
+
+.auth-btn.guest {
+  background-color: #4CAF50;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.auth-btn.guest:hover {
+  background-color: #45a049;
+}
+
+.auth-btns {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.auth-btn img.icon-img {
+  width: 24px;
+  height: 24px;
+}

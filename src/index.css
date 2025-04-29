@@ -74,6 +74,7 @@
 .weather {
   text-align: center;
   color: white;
+  
 }
 
 .weather-icon {
@@ -139,7 +140,19 @@
   font-weight: bold;
   transition: background 0.3s, transform 0.2s;
 }
-
+.rating{
+  color: white;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(45deg, rgb(42, 125, 208), rgb(126, 93, 174), rgb(15, 15, 191));
+  background-size: 300% 300%;
+  animation: gradientAnimation 10s infinite ease-in-out;
+  border-radius: 20px;
+}
 .rate-button:hover {
   background: #e06642;
   transform: scale(1.05);
@@ -170,4 +183,40 @@
 
 .nav-btn:hover {
   background-color: #ff5722;
+}
+
+.dropdown {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.dropdown-toggle {
+  background-color: #ff7f50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }

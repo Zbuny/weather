@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { HashRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
+import {HashRouter, Route, Routes, Link, useNavigate, } from "react-router-dom";
 import CitiesList from "./CitiesList";
 import searchIcon from "./Assets/search.png";
 import clearIcon from "./Assets/clear.png";
@@ -9,9 +9,21 @@ import rainIcon from "./Assets/rain.png";
 import snowIcon from "./Assets/snow.png";
 import windIcon from "./Assets/wind.png";
 import humidityIcon from "./Assets/humidity.png";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import { auth } from "./firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const Star = ({ selected, onClick }) => (
-  <span onClick={onClick} style={{ cursor: "pointer", color: selected ? "gold" : "gray", fontSize: "24px" }}>
+  <span
+    onClick={onClick}
+    style={{
+      cursor: "pointer",
+      color: selected ? "gold" : "gray",
+      fontSize: "24px",
+      flexDirection: "row",
+    }}
+  >
     ★
   </span>
 );
@@ -22,9 +34,15 @@ const StarRating = ({ totalStars = 5 }) => {
     <div className="rating">
       <p>Rate the weather forecast:</p>
       {[...Array(totalStars)].map((_, i) => (
-        <Star key={i} selected={i < starsSelected} onClick={() => setStarsSelected(i + 1)} />
+        <Star
+          key={i}
+          selected={i < starsSelected}
+          onClick={() => setStarsSelected(i + 1)}
+        />
       ))}
-      <p>{starsSelected} out of {totalStars} stars</p>
+      <p>
+        {starsSelected} out of {totalStars} stars
+      </p>
       <Link to="/">Back</Link>
     </div>
   );
@@ -34,28 +52,30 @@ const Weather = () => {
   const [city, setCity] = useState("Almaty");
   const [weather, setWeather] = useState(null);
   const [icon, setIcon] = useState(clearIcon);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     getWeather(city);
   }, []);
 
   const getWeather = (cityName) => {
-    fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${cityName}&count=1`)
+    fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${cityName}&count=1`
+    )
       .then((res) => res.json())
       .then((data) => {
         if (!data.results) {
           alert("City not found!");
           return;
         }
-        let lat = data.results[0].latitude;
-        let lon = data.results[0].longitude;
-        let name = data.results[0].name;
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+        const { latitude, longitude, name } = data.results[0];
+        fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+        )
           .then((res) => res.json())
           .then((data) => {
             setWeather({ ...data.current_weather, name });
-            let code = data.current_weather.weathercode;
+            const code = data.current_weather.weathercode;
             if (code === 0) setIcon(clearIcon);
             else if (code >= 1 && code <= 3) setIcon(cloudIcon);
             else if (code >= 45 && code <= 48) setIcon(drizzleIcon);
@@ -74,7 +94,12 @@ const Weather = () => {
   return (
     <div className="weather">
       <form onSubmit={handleSubmit} className="search-bar">
-        <input type="text" placeholder="Enter city..." value={city} onChange={(e) => setCity(e.target.value)} />
+        <input
+          type="text"
+          placeholder="Enter city..."
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        />
         <button type="submit">
           <img src={searchIcon} alt="search" />
         </button>
@@ -89,7 +114,11 @@ const Weather = () => {
             <div className="col">
               <img src={humidityIcon} alt="humidity" />
               <div>
-                <p>{weather.relative_humidity ? `${weather.relative_humidity}%` : "—"}</p>
+                <p>
+                  {weather.relative_humidity
+                    ? `${weather.relative_humidity}%`
+                    : "—"}
+                </p>
                 <span>Humidity</span>
               </div>
             </div>
@@ -112,22 +141,53 @@ const Weather = () => {
 };
 
 const App = () => {
+  const [user, setUser] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+  }, []);
+
+  const logout = async () => {
+    await signOut(auth);
+  };
+
   return (
-    <Router>
+    <HashRouter>
       <div className="app">
-      <nav className="nav-links">
-      <Link to="/" className="nav-btn">Home</Link>
-      <Link to="/cities" className="nav-btn">Cities List</Link>
-       </nav>
+<div className="dropdown">
+  <button
+    className="dropdown-toggle"
+    onClick={() => setMenuOpen(!menuOpen)}
+  >
+    ☰ Menu
+  </button>
+  <div className={`dropdown-menu ${menuOpen ? "show" : ""}`}>
+    <Link to="/" className="nav-btn">Home</Link>
+    <Link to="/cities" className="nav-btn">Cities List</Link>
+    {!user && (
+      <>
+        <Link to="/login" className="nav-btn">Login</Link>
+        <Link to="/register" className="nav-btn">Register</Link>
+      </>
+    )}
+    {user && (
+      <button onClick={logout} className="nav-btn">Logout</button>
+    )}
+  </div>
+</div>
         <Routes>
           <Route path="/" element={<Weather />} />
           <Route path="/rate" element={<StarRating />} />
           <Route path="/cities" element={<CitiesList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
-    </Router>
+    </HashRouter>
   );
 };
-
 
 export default App;
