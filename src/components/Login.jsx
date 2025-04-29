@@ -55,7 +55,7 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-        />
+        /> 
         <button type="submit" className="auth-btn login-btn">Login</button>
         <div className="auth-btns">
           <button type="button" className="auth-btn google" onClick={handleGoogleLogin} title="Login with Google">
